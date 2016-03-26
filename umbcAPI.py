@@ -7,10 +7,8 @@
 
 import sys
 import os
-import time
 import urllib
 import urllib2
-import scipy.stats
 from utility import Utility
 
 #The type of data is dict => data[w1:w2] = float(score)
@@ -29,24 +27,20 @@ def getScore(w1, w2):
     response = urllib2.urlopen(request)
     return response.read()
 
-
-
 def useAPI(data):
-    originScore = []
-    newScore = []
+    newData = {}
     #Here print i in order to know the process
     i = 1
     for key in data:
-        originScore.append(data[key])
         w1, w2 = key.strip().split(":")
         score = getScore(w1, w2)
         if score == "-inf":
-            newScore.append(-1)
+            newData[key] = -1
         else:
-            newScore.append(float(score))
+            newData[key] = float(score)
         print i
         i += 1
-    return scipy.stats.spearmanr(originScore, newScore)[0]
+    return newData
 
         
 if __name__ == "__main__":
@@ -57,8 +51,9 @@ if __name__ == "__main__":
         
     utilityInstance = Utility()
     data = utilityInstance.readData(sys.argv[1])
-    spearmanr = useAPI(data)
-    utilityInstance.writeData("umbc", spearmanr, sys.argv[1], sys.argv[2])
+    newData = useAPI(data)
+    utilityInstance.generateFile(sys.argv[2], newData)
+    #utilityInstance.writeData("umbc", spearmanr, sys.argv[1], sys.argv[2])
         
     
     

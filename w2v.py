@@ -13,26 +13,16 @@ import scipy.stats
 from utility import Utility
 
 def embedding(data):
-    originScore = []
-    newScore = []
-    start = time.clock()
+    newData = {}
     model = gensim.models.Word2Vec.load_word2vec_format('./data/GoogleNews-vectors-negative300.bin', binary = True) 
-    end = time.clock()
-    print (end - start)
     i = 1
     for key in data:
-        originScore.append(data[key])
         w1, w2 = key.strip().split(":")
         score = model.similarity(w1, w2)
-        newScore.append(float(score))
+        newData[key] = float(score)
         print i
         i += 1
-        # if i > 5:
-            # print originScore
-            # print newScore
-            # print scipy.stats.spearmanr(originScore, newScore)[0]
-            # exit()
-    return scipy.stats.spearmanr(originScore, newScore)[0]
+    return newData
     
 if __name__ == "__main__":
     if len(sys.argv) < 3:
@@ -42,6 +32,7 @@ if __name__ == "__main__":
         
     utilityInstance = Utility()
     data = utilityInstance.readData(sys.argv[1])
-    spearmanr = embedding(data)
-    utilityInstance.writeData("w2v", spearmanr, sys.argv[1], sys.argv[2])
+    newData = embedding(data)
+    utilityInstance.generateFile(sys.argv[2], newData)
+    #utilityInstance.writeData("w2v", spearmanr, sys.argv[1], sys.argv[2])
 

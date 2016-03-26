@@ -39,19 +39,17 @@ def maxScore(obj1, obj2, method):
     return bestScore
 
 def wordNet(data, method):
-    originScore = []
-    newScore = []
+    newData = {}
     i = 1
     for key in data:
-        originScore.append(data[key])
         w1, w2 = key.strip().split(":")
         obj1 =  wn.synsets(w1)
         obj2 = wn.synsets(w2)
         score = maxScore(obj1, obj2, method)
-        newScore.append(float(score))
+        newData[key] = float(score)
         print i
         i += 1
-    return scipy.stats.spearmanr(originScore, newScore)[0]
+    return newData
     
 
 if __name__ == "__main__":
@@ -63,8 +61,9 @@ if __name__ == "__main__":
         
     utilityInstance = Utility()
     data = utilityInstance.readData(sys.argv[1])
-    spearmanr = wordNet(data, sys.argv[3])
-    utilityInstance.writeData(sys.argv[3], spearmanr, sys.argv[1], sys.argv[2])
+    newData = wordNet(data, sys.argv[3])
+    utilityInstance.generateFile(sys.argv[2], newData)
+    #utilityInstance.writeData(sys.argv[3], spearmanr, sys.argv[1], sys.argv[2])
 
 
 
