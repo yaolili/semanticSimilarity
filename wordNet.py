@@ -16,6 +16,7 @@ def maxScore(obj1, obj2, method):
     bestScore = -1
     brown_ic = wordnet_ic.ic('ic-brown.dat')
     semcor_ic = wordnet_ic.ic('ic-semcor.dat')
+    bnc_ic = wordnet_ic.ic('ic-bnc.dat')
     for i in range(len(obj1)):
         for j in range(len(obj2)):
             pos1 = obj1[i].pos()
@@ -25,15 +26,19 @@ def maxScore(obj1, obj2, method):
             elif method == "res":
                 if (pos1 != pos2) or pos1 == "s" or pos1 == "a":
                     continue
-                score = obj1[i].res_similarity(obj2[j], brown_ic)
+                #score = obj1[i].res_similarity(obj2[j], brown_ic)
+                score = obj1[i].res_similarity(obj2[j], bnc_ic)
             elif method == "jcn":
                 if (pos1 != pos2) or pos1 == "s" or pos1 == "a":
                     continue
-                score = obj1[i].jcn_similarity(obj2[j], brown_ic)
+                #score = obj1[i].jcn_similarity(obj2[j], brown_ic)
+                score = obj1[i].jcn_similarity(obj2[j], bnc_ic)
             else:
                 if (pos1 != pos2) or pos1 == "s" or pos1 == "a":
                     continue
-                score = obj1[i].lin_similarity(obj2[j], semcor_ic)  
+                #score = obj1[i].lin_similarity(obj2[j], semcor_ic) 
+                #score = obj1[i].lin_similarity(obj2[j], brown_ic)
+                score = obj1[i].lin_similarity(obj2[j], bnc_ic) 
             if score != "None" and score > bestScore:
                 bestScore = score
     return bestScore
